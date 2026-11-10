@@ -18,6 +18,7 @@ public record LocationResponse(
         OffsetDateTime departureDate,
         BigDecimal budget,
         String notes,
+        Integer version,
         OffsetDateTime createdAt
 ) {
 
@@ -34,6 +35,7 @@ public record LocationResponse(
                 location.getDepartureDate(),
                 location.getBudget(),
                 location.getNotes(),
+                location.getVersion(),
                 location.getCreatedAt()
         );
     }

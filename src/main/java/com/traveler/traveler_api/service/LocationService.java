@@ -6,6 +6,8 @@ import com.traveler.traveler_api.dto.LocationUpdateRequest;
 import com.traveler.traveler_api.entity.Location;
 import com.traveler.traveler_api.entity.TravelPlan;
 import com.traveler.traveler_api.exception.BadRequestException;
+import com.traveler.traveler_api.exception.ConflictException;
+import java.math.BigDecimal;
 import com.traveler.traveler_api.exception.NotFoundException;
 import com.traveler.traveler_api.repository.LocationRepository;
 import com.traveler.traveler_api.repository.TravelPlanRepository;
@@ -56,44 +58,36 @@ public class LocationService {
 
     @Transactional
     public LocationResponse update(UUID id, LocationUpdateRequest req){
-        Location location = getLocationOrThrow(id);
+        Location current = getLocationOrThrow(id);
 
-        OffsetDateTime arrival = location.getArrivalDate();
-        if (req.arrivalDate() != null) {
-            arrival = req.arrivalDate();
+        String name = current.getName();
+        if (req.name() != null) {
+            name = req.name().trim();
         }
-        OffsetDateTime departure = location.getDepartureDate();
-        if (req.departureDate() != null) {
-            departure = req.departureDate();
-        }
+        String address = valueOrDefault(req.address(), current.getAddress());
+        BigDecimal latitude = valueOrDefault(req.latitude(), current.getLatitude());
+        BigDecimal longitude = valueOrDefault(req.longitude(), current.getLongitude());
+        Integer visitOrder = valueOrDefault(req.visitOrder(), current.getVisitOrder());
+        OffsetDateTime arrival = valueOrDefault(req.arrivalDate(), current.getArrivalDate());
+        OffsetDateTime departure = valueOrDefault(req.departureDate(), current.getDepartureDate());
+        BigDecimal budget = valueOrDefault(req.budget(), current.getBudget());
+        String notes = valueOrDefault(req.notes(), current.getNotes());
+
         checkTimes(arrival, departure);
 
-        if (req.name() != null) {
-            location.setName(req.name().trim());
-        }
-        if (req.address() != null) {
-            location.setAddress(req.address());
-        }
-        if (req.latitude() != null) {
-            location.setLatitude(req.latitude());
-        }
-        if (req.longitude() != null) {
-            location.setLongitude(req.longitude());
-        }
-        if (req.visitOrder() != null) {
-            location.setVisitOrder(req.visitOrder());
-        }
-        if (req.budget() != null) {
-            location.setBudget(req.budget());
-        }
-        if (req.notes() != null) {
-            location.setNotes(req.notes());
-        }
-        location.setArrivalDate(arrival);
-        location.setDepartureDate(departure);
+        int updatedRows = locationRepository.updateWithVersion(id, name, address, latitude,
+                longitude, visitOrder, arrival, departure, budget, notes, req.version());
 
-        Location saved = locationRepository.saveAndFlush(location);
-        return LocationResponse.from(saved);
+        if (updatedRows == 0) {
+            Integer currentVersion = null;
+            Optional<Location> fresh = locationRepository.findById(id);
+            if (fresh.isPresent()) {
+                currentVersion = fresh.get().getVersion();
+            }
+            throw new ConflictException("Conflict: location was modified by another user", currentVersion);
+        }
+
+        return LocationResponse.from(getLocationOrThrow(id));
     }
 
     @Transactional
@@ -116,5 +110,12 @@ public class LocationService {
         if (arrival != null && departure != null && departure.isBefore(arrival)) {
             throw new BadRequestException("Validation error: departure_date must be on or after arrival_date");
         }
+    }
+
+    private static <T> T valueOrDefault(T value, T fallback){
+        if (value != null) {
+            return value;
+        }
+        return fallback;
     }
 }

@@ -305,6 +305,17 @@ jsonpath "$.name" == "Valid Test Location"
 jsonpath "$.visit_order" == 1
 jsonpath "$.budget" == 150.50
 
+# Test 22b: Update location without version (optimistic locking)
+PUT {{host}}/api/locations/{{valid_location_id}}
+Content-Type: application/json
+{
+  "name": "Updated Without Version"
+}
+
+HTTP 400
+[Asserts]
+jsonpath "$.error" contains "Validation error"
+
 # ===================================================================
 # LOCATION UPDATE VALIDATION TESTS
 # ===================================================================
@@ -352,7 +363,8 @@ jsonpath "$.error" exists
 PUT {{host}}/api/locations/00000000-0000-0000-0000-000000000000
 Content-Type: application/json
 {
-  "name": "Ghost Location"
+  "name": "Ghost Location",
+  "version": 1
 }
 
 HTTP 404

@@ -39,11 +39,16 @@ public class Location {
 
     private String notes;
 
+    private Integer version;
+
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
 
     @PrePersist
     void onCreate(){
+        if (version == null) {
+            version = 1;
+        }
         createdAt = OffsetDateTime.now();
     }
 
@@ -141,5 +146,13 @@ public class Location {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

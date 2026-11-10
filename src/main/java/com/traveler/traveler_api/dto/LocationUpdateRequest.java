@@ -31,6 +31,10 @@ public record LocationUpdateRequest(
         @Digits(integer = 8, fraction = 2, message = "budget must have at most 2 decimal places")
         BigDecimal budget,
 
-        String notes
+        String notes,
+
+        @NotNull(message = "version is required")
+        @Min(value = 1, message = "version must be positive")
+        Integer version
 ) {
 }
