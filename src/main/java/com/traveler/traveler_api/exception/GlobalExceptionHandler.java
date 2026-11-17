@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.dao.ConcurrencyFailureException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -54,6 +55,13 @@ public class GlobalExceptionHandler {
             body.put("current_version", ex.getCurrentVersion());
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    // 409: conflict detected by the database itself (serialization failure under
+    // REPEATABLE READ / SERIALIZABLE isolation, deadlock, lock timeout)
+    @ExceptionHandler(ConcurrencyFailureException.class)
+    public ResponseEntity<Map<String, Object>> handleConcurrency(ConcurrencyFailureException ex){
+        return buildError(HttpStatus.CONFLICT, "Conflict: data was modified concurrently, please retry");
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
