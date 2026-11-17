@@ -1,0 +1,480 @@
+{
+    "metrics": {
+        "data_sent": {
+            "count": 54922166,
+            "rate": 298841.73392327444
+        },
+        "data_received": {
+            "count": 520838980,
+            "rate": 2833981.8913556626
+        },
+        "http_req_duration{type:read}": {
+            "p(90)": 1.0274,
+            "p(95)": 1.0542,
+            "avg": 0.300101585079069,
+            "min": 0,
+            "med": 0,
+            "max": 67.5425,
+            "thresholds": {
+                "avg<1000": false,
+                "p(95)<2000": false
+            }
+        },
+        "http_req_blocked": {
+            "med": 0,
+            "max": 10.2122,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.005426768828976494,
+            "min": 0
+        },
+        "http_req_receiving": {
+            "p(95)": 0.5247,
+            "avg": 0.060328381692741934,
+            "min": 0,
+            "med": 0,
+            "max": 16.5172,
+            "p(90)": 0.5111
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 1.5674,
+            "p(95)": 2.1167,
+            "avg": 0.4942361481486108,
+            "min": 0,
+            "med": 0,
+            "max": 286.77
+        },
+        "optimistic_lock_conflicts": {
+            "passes": 76,
+            "fails": 0,
+            "value": 1
+        },
+        "iterations": {
+            "count": 296389,
+            "rate": 1612.707748557939
+        },
+        "checks": {
+            "passes": 981436,
+            "fails": 152,
+            "value": 0.9998451488812007
+        },
+        "http_reqs": {
+            "count": 326996,
+            "rate": 1779.2461358129076
+        },
+        "http_req_duration": {
+            "max": 286.77,
+            "p(90)": 1.5674,
+            "p(95)": 2.1167,
+            "avg": 0.4942361481486108,
+            "min": 0,
+            "med": 0
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "http_req_waiting": {
+            "min": 0,
+            "med": 0,
+            "max": 283.4071,
+            "p(90)": 1.552,
+            "p(95)": 2.1004,
+            "avg": 0.43155342939974917
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 10.088,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.004663716069921344
+        },
+        "api_errors": {
+            "passes": 0,
+            "fails": 326996,
+            "value": 0
+        },
+        "vus": {
+            "value": 4,
+            "min": 0,
+            "max": 200
+        },
+        "vus_max": {
+            "value": 200,
+            "min": 200,
+            "max": 200
+        },
+        "http_req_duration{type:write}": {
+            "avg": 2.3741769791224265,
+            "min": 0,
+            "med": 2.1049,
+            "max": 286.77,
+            "p(90)": 3.0430000000000006,
+            "p(95)": 3.510309999999999,
+            "thresholds": {
+                "avg<1000": false,
+                "p(95)<2000": false
+            }
+        },
+        "iteration_duration": {
+            "avg": 101.3040065424163,
+            "min": 50.1621,
+            "med": 101.2882,
+            "max": 217.7055,
+            "p(90)": 141.2886,
+            "p(95)": 146.27877999999998
+        },
+        "http_req_sending": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.0023543370561107772,
+            "min": 0,
+            "med": 0,
+            "max": 9.5345
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 326996,
+            "value": 0
+        }
+    },
+    "setup_data": {
+        "planIds": [
+            "be06e7db-f06a-4c3a-81fa-a7ec17540b90",
+            "ebf5f405-14a6-4680-be6f-e866f5f706fc",
+            "db807fa3-374d-4fda-83c6-52334e3594f6",
+            "10cec1d6-67be-42e3-b22a-319a67ffa9b2",
+            "50f950e2-f7e0-4568-8498-84267666b2c2",
+            "c6f63986-76af-4f76-8436-82aea1c38589",
+            "5c5c4963-abe7-4d45-a175-fe84ed8c980c",
+            "e8bab7c2-d294-461e-ba01-76061c7de4fb",
+            "8814ebe8-5ce6-4d81-a105-20fcedaef3a8",
+            "b61ec80c-7d25-4a11-9a80-57af3d6fbe69",
+            "9e64074d-6174-4867-aa61-856cec6eb78a",
+            "a1b0cb34-d179-4c3a-8c57-86c9dc4a7328",
+            "cf4d4169-598f-445c-ad3e-9c2aff6d3d38",
+            "2c3f463c-55a6-4e1e-a08c-13d6a1ea5fac",
+            "b06952bf-a504-4013-ac5d-284fdfafa91d",
+            "86d9812c-5a14-4530-a317-16e683977c82",
+            "a2714f89-5d97-48ce-b12e-e83c562729b2",
+            "accdc025-4244-4127-b180-ff32fc4427c0",
+            "8c0fef5e-be7e-4445-80b5-d6741aaa9984",
+            "e6319e3b-bd7f-4ae2-855d-8e5ee3744d35",
+            "bc9674d1-ecd8-428c-8ad4-ee4a518120fb",
+            "173a4bf0-82ae-4503-b14b-70ef7ae997be",
+            "77b39c8f-f9e9-4a8a-8b08-3a173d8e9752",
+            "e1b4bf8f-68b3-4061-a634-d40237dfb35a",
+            "848e0640-cac0-443e-a10e-68079572bf10",
+            "261f0aa2-ea9d-481a-ada9-bd95da2d8aa2",
+            "e9fdf29e-b941-4a98-b902-1a4af3d37ddf",
+            "4a4adf8c-e1ba-4612-8ae7-ad12d504389c",
+            "f78fe1c3-fcd0-4d2c-8194-06ee1d78ba21",
+            "05c664b6-e31f-44ff-9a0a-36e69d406ebd",
+            "aae262a1-6273-4e59-a217-10d21645155e",
+            "f8948a56-f107-4284-a5d9-a8520a4081e7",
+            "d77b68b0-491a-4785-ac3e-38bdf01ba542",
+            "4839a47e-5d66-47b8-82fe-77a51ede6baf",
+            "5e3aa36f-4c28-4091-bb80-e35da0ccfefe",
+            "f2be3f0d-e720-460b-a5cb-2dddd72244a0",
+            "19e9aa61-eef0-40fb-b775-e555aa8a9b4a",
+            "d250b3d9-4830-482f-8f3c-9fd94274a516",
+            "213b3c35-eff9-4533-b53b-c96488ca041d",
+            "f9c5a5ea-09b4-41ae-9353-341d60f1abab",
+            "d480b445-cafc-41f7-acf9-bb61e61d7c4e",
+            "0d3328e8-0a97-4e0c-9a03-8e940c02cb79",
+            "d962da9a-2eb3-43b4-9a37-13ea6d336d9f",
+            "ff4877ef-8e9c-460c-b296-71c0014b6aea",
+            "4e2f4671-f38f-4fca-9e20-74af872571a2",
+            "75e4ab1a-c091-4494-8dd8-dfef6b3bea7c",
+            "761b35ab-e1a9-44f6-83f3-18a8028a550d",
+            "4e46faa1-a082-4ba9-bdb8-ecdd11d62b09",
+            "7c328d44-4e60-4022-8b62-a3e269b08cad",
+            "8e2eb771-c858-4b51-831f-b4b803ee78b3",
+            "076a8033-7ff1-4525-9f7f-698e83b08253",
+            "a4c5de16-7808-4376-b56b-490136eb72d5",
+            "8fa00ce5-6dc0-4e38-8a9c-ee8bdbcd3e52",
+            "473b8590-aa51-47c6-ac9f-4b7310c83b99",
+            "0cb26c90-2d5f-4b2a-9440-df882a4a0e1d",
+            "42a73b68-ea54-48aa-b11e-1064d3d3250c",
+            "45fe9eee-dfe9-4080-8d99-9d58cc79a468",
+            "b0c7d59f-8cd4-49cb-b5a5-6bd3162f15ba",
+            "38942126-7d9e-4677-85cd-fde6171f8ec6",
+            "d4249e0a-defe-410c-9283-37af44368380",
+            "dc134dd8-ff75-46f1-b4ff-dd22c16c4272",
+            "fab5c9e4-21ed-4509-9719-7748ba4d6274",
+            "acaef5c0-908c-4147-b485-f546e10edfb7",
+            "903ebb11-7494-43fc-901f-5571dafd6dbf",
+            "d54a9b82-0ed3-44e4-a3ec-6891a30a2694",
+            "5d058740-9076-49d7-8622-16c9cc06a577",
+            "6a00227c-8e94-410c-8bec-61040d9820b9",
+            "a3b4f7f8-3682-405f-b11f-f5e9c6aa8e6d",
+            "34462db1-cd93-4042-88ba-d268754ed7a2",
+            "03ef63b1-fcc7-485b-af4b-d7c1a56d7fac",
+            "9a59996b-4500-455a-a04f-6f725e011526",
+            "29f89f18-2aed-46fe-8dff-79f3e9583324",
+            "a007a9b8-2a46-4096-8271-c80177191b91",
+            "cf4af47b-9e7b-499c-8171-8f23fdfabdd1",
+            "62f3ab34-2466-4c00-b8f1-9ffe48a3c13d",
+            "2c9f2cf7-60cf-49ec-b85c-64c24223c210",
+            "8e59b422-8d65-47ab-8315-af8c5d97c9b3",
+            "970ef17d-4006-4934-98d7-427b08a1e592",
+            "1d08e2f4-e878-4dc7-be19-8e9bcc76b3f0",
+            "aaa184d6-1541-4348-984a-bf7b1faaa4a2",
+            "6448d001-e5f3-434f-9f07-15525a0ca424",
+            "c642027c-0ef3-47d3-8e55-56dc13c654ff",
+            "16c249ec-cd74-4695-adbb-d718fffaa90d",
+            "6e0daa15-f036-4f8c-8359-7aea8fc54d26",
+            "80044673-61c6-4333-84ed-57c9339af5a0",
+            "2aa4171e-bcb4-4641-ba29-11c3d05723db",
+            "b13b0414-f213-4bc9-8ed0-c54d02d2f3af",
+            "a6af6de6-c820-4afb-ab94-933b803be0a4",
+            "f989a38b-4e42-4a35-9803-8a56c6188f4c",
+            "95969b2b-3789-4a95-a0cc-3fe129cee1e4",
+            "47bc9947-6c8f-44f9-b7f4-b979147e931c",
+            "feaf47a8-d150-4858-8c76-5edfb031b0aa",
+            "bc90944b-acb1-4db2-a897-2ae77d67ecfd",
+            "4499b051-c082-4774-b7b4-64f0acc406e1",
+            "025c4370-fa45-4df6-80de-c7db8a865c19",
+            "18eef14a-45b4-40fa-96e9-1dc1996f5dfd",
+            "486ccb23-6ee2-4ddc-ac39-e3d80dba5087",
+            "3f009790-c553-4d02-96e5-15a65e4148c8",
+            "b39d46ad-d63b-471b-98d5-910e63ff0554",
+            "c1fee173-d54b-4a80-bd9d-8885275e157b",
+            "51a6e265-fd83-4adc-afaf-737772acc3b0",
+            "11e57a0c-9a58-4e42-b412-d851eae02144",
+            "f1de1795-45a4-44e2-a970-2c98780c49df",
+            "a1716901-de3d-430d-8e1f-e0583bfa1565",
+            "d019df89-f56f-4c40-827d-e227bed0ad4a",
+            "30f7534d-ab1b-4868-9914-f1054b53d32f",
+            "ea4e9dba-f633-4d24-9a3a-d8a71966ab8d",
+            "8947d42b-ff62-46b7-9541-8f6dbb10a985",
+            "58afc2a4-3248-4aee-b5b3-9ef14451b75b",
+            "754b0d22-c12c-4bbe-98d3-a74d38dcdf62",
+            "db72bc39-0733-406f-90ff-5a4f4653e00f",
+            "6143f05a-8b02-4520-bafa-f49aca5cf438",
+            "a5562912-1cdf-461c-841a-a6882be32d36",
+            "5222b320-74e5-427c-8581-f21998150868",
+            "99d8e086-c8c7-45b2-83cb-5a87c5f9ba6d",
+            "2fd77a23-ee3f-4bb6-a247-828715fc3ccd",
+            "e10aabc7-3b5a-4203-9bc1-b276a3775a3e",
+            "26f6ab78-91ee-4dac-b452-84e7959d6393",
+            "34765be2-be90-4d48-97c3-1c196a308ab9",
+            "3f8e7586-6d8e-4482-b4d2-38b11649621d",
+            "0e74bf52-4be3-4212-a800-987968a3a511",
+            "0a2c37d3-7135-4966-9039-0186ab3910bf",
+            "14e54d31-7e70-4e23-ab10-02b9fb2b2ef3",
+            "4f6510d9-2f70-49f1-8020-6e4abdf1cefd",
+            "439c10d7-d736-4694-b25d-5376282dc8c2",
+            "3a11a3d5-23bd-48d2-8f64-7c34c8b35864",
+            "be47ebf0-3f79-45b0-8a56-0a8facb64472",
+            "5d3971ff-9f4c-40a6-aac5-c00ebef3a705",
+            "fe8d00eb-9434-4f0f-911c-92791d6b311c",
+            "9c7ac563-08c4-4771-9657-39946d4f9038",
+            "4115114e-460d-4d99-bb6a-bd444678d13a",
+            "ff952bee-4a02-4e91-81a4-94eda407eda0",
+            "1568fedb-61c5-4755-9c35-59d687da1b54",
+            "bff16292-926c-46a2-b01f-050034b4cc02",
+            "ec34b22b-8096-4629-b574-1d61a6b36a6d",
+            "fc1e4297-3bbe-4de7-987c-d4039694acf1",
+            "29a7c742-93e0-4202-bf95-8ffe1de51ff4",
+            "d79c9aa0-ae5f-48e2-ad15-9eb726473607",
+            "1622a9ff-c493-4d04-9d15-ed147418c21d",
+            "096af05c-b1ab-4eb6-97f6-e927e54dbec4",
+            "0e66d35d-acaf-45aa-9296-be46fe526b35",
+            "1ebd09f8-1977-41b4-b1f1-efb9bd26f412",
+            "f18f69f1-047a-4404-ba85-d6a2ba8268ec",
+            "7c421e85-4107-4e49-a429-4470b1b74f88",
+            "e258c308-4659-476a-a4e1-0f7babdb7de9",
+            "751d614a-de27-4c27-a7d3-1a39b73bd2af",
+            "59ffe6d3-d50e-4e58-a77f-afae7b388c46",
+            "87bdbd77-b30e-4174-84f2-58c2abcdaa3d",
+            "e475bd5f-dc11-4894-8a2d-d701e3b50343",
+            "b0343a54-ac89-4188-98d9-c2cb4ed1e27a",
+            "1db26790-5dde-4263-9061-af3a8531641c",
+            "c6547346-94a8-48c6-a1b8-f716b367d62a",
+            "d1628cbb-6343-4675-a397-64f72409379f",
+            "ab15fc03-75b5-475d-8fb4-77cf378a1de0",
+            "cb3a13b0-c7c3-4f69-b5dc-321ebff98edc",
+            "07bf5d12-b298-4cfc-ba62-1a6c9d64e86c",
+            "422b8944-de77-485f-b9b5-8b331621c73d",
+            "34f487a6-8b58-4b62-bdbd-49912904ee41",
+            "057edd80-1950-4482-93ee-cf5c55c9e54e",
+            "bc76ac8d-9d1a-4309-ae99-a9c450380290",
+            "c7bbb957-2b40-4d32-ac9b-ff1dbcef9606",
+            "3de386cf-5e54-4797-9a78-7c1dba581419",
+            "1ff34f7d-23cc-405c-a196-f92503e08676",
+            "c12b38fb-1eb4-4a98-909e-018867d16e81",
+            "fa25cb03-fa61-45fa-ac77-b0d7b1918d62",
+            "f5cddfb2-574d-4242-963e-04a945fafdf2",
+            "2746dc81-8056-4508-8117-e99202ab7777",
+            "7ee27aad-10b0-4634-8c2f-0911f5be527e",
+            "287afbe6-33c0-45f9-a4a6-d97a8446d50b",
+            "f2f14c65-0d25-4090-a016-141d25ff404d",
+            "76d398ed-de1e-4545-8595-d54d22693573",
+            "c14a2f69-42bf-4d47-9735-cbe8ac53e3c2",
+            "0816559b-bf39-4bd6-81e2-708b3c0f1ff4",
+            "5a68e019-f8d1-4f1a-b3f6-b8f49f108007",
+            "d7504f66-abb6-4d06-868f-3e911e775cca",
+            "3ccb003f-f981-4cb6-895b-5b73772f1d15",
+            "b7b43b1d-25d3-455d-bf4b-c08aa9a8f3f4",
+            "ccddf537-63f9-4d28-8b78-e9b61f9a5eb5",
+            "b7262490-70e1-4951-83ca-89e27c9f029c",
+            "4f4a3085-0e7b-4274-89f1-11dca14bec46",
+            "d079d56c-23aa-4785-ae81-e7f24f6c05a7",
+            "eda83a63-37d1-4a2a-be93-c30560af8e14",
+            "18968e04-3d71-4272-b130-6b0cd358d5b7",
+            "bd312462-3e84-47d7-aecd-764f0f674fcd",
+            "3de71fb6-66e7-4d46-9db2-a01bcd3a43f1",
+            "002d45e1-f77a-4af1-8562-5989054cc1a2",
+            "2c2a14b9-0ef2-49b4-9cc6-91bc5a00f6e9",
+            "a9f3e88b-6901-4873-9ae0-16830a73cf5a",
+            "9a2949ba-7d5a-4f8a-9979-89a11c4dcafb",
+            "f20059ce-4de3-4297-b678-3f0bd3af67f0",
+            "323c3fd9-777f-42de-b506-a4b3b61effd2",
+            "0c46078c-e537-4495-93a3-ab767d7bbd19",
+            "2375af1f-821b-44de-b79b-dcef60033019",
+            "a288229c-bf77-4953-9039-6f9d4724de14",
+            "b7e49302-bd90-46cf-ab9a-9eca52f5a360",
+            "8ccfc457-e518-43ea-8fc3-789e584b5f89",
+            "416ac6a4-bb86-48b0-b6aa-92d39343cf4d",
+            "0d8c39b2-2298-4fd5-a98e-fbd33f43cb59",
+            "7d1560f1-415a-458b-ae1e-93b05a8bd3c0",
+            "ddf29ed2-9c2f-4a23-8e09-d9f5a1849c6b"
+        ]
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "setup": {
+                "name": "setup",
+                "path": "::setup",
+                "id": "5c0f8025f7e0b6654089e5b00e950f1a",
+                "groups": {},
+                "checks": {
+                    "status is one of [201]": {
+                        "id": "7c278eec949bf686c4bf5c8acd4a777d",
+                        "passes": 800,
+                        "fails": 0,
+                        "name": "status is one of [201]",
+                        "path": "::setup::status is one of [201]"
+                    },
+                    "plan created successfully": {
+                        "fails": 0,
+                        "name": "plan created successfully",
+                        "path": "::setup::plan created successfully",
+                        "id": "503abbf1294e289c5b1a337decd83064",
+                        "passes": 200
+                    },
+                    "plan has valid UUID": {
+                        "name": "plan has valid UUID",
+                        "path": "::setup::plan has valid UUID",
+                        "id": "23a4d9b6fc9be3aac18e83b576700906",
+                        "passes": 200,
+                        "fails": 0
+                    },
+                    "plan has version 1": {
+                        "name": "plan has version 1",
+                        "path": "::setup::plan has version 1",
+                        "id": "2136f68b592864bdfbb3a3c1f37a66a2",
+                        "passes": 200,
+                        "fails": 0
+                    },
+                    "location created successfully": {
+                        "fails": 0,
+                        "name": "location created successfully",
+                        "path": "::setup::location created successfully",
+                        "id": "1fc024f74a6790ebf831c42de85527a0",
+                        "passes": 600
+                    },
+                    "location has visit_order": {
+                        "path": "::setup::location has visit_order",
+                        "id": "bf622d1bb02876d41b0e4e465775834e",
+                        "passes": 600,
+                        "fails": 0,
+                        "name": "location has visit_order"
+                    },
+                    "location linked to plan": {
+                        "fails": 0,
+                        "name": "location linked to plan",
+                        "path": "::setup::location linked to plan",
+                        "id": "082078976ad12d101071c56adb884786",
+                        "passes": 600
+                    }
+                }
+            },
+            "teardown": {
+                "groups": {},
+                "checks": {
+                    "status is one of [204]": {
+                        "passes": 200,
+                        "fails": 0,
+                        "name": "status is one of [204]",
+                        "path": "::teardown::status is one of [204]",
+                        "id": "6a04f7e050b48d5e61b0fdb33cba5723"
+                    },
+                    "plan deleted successfully": {
+                        "name": "plan deleted successfully",
+                        "path": "::teardown::plan deleted successfully",
+                        "id": "26ca0951a4defad59646ac6dba1ef316",
+                        "passes": 200,
+                        "fails": 0
+                    }
+                },
+                "name": "teardown",
+                "path": "::teardown",
+                "id": "a8a9942382e8ffe2e56ef29e664b8229"
+            }
+        },
+        "checks": {
+            "status is one of [200]": {
+                "name": "status is one of [200]",
+                "path": "::status is one of [200]",
+                "id": "4cc9cf26dabd60fd28bb0650b836626a",
+                "passes": 296389,
+                "fails": 0
+            },
+            "plan retrieved successfully": {
+                "name": "plan retrieved successfully",
+                "path": "::plan retrieved successfully",
+                "id": "996db80bc0a4bccb60a158875d56d286",
+                "passes": 296389,
+                "fails": 0
+            },
+            "plan has locations array": {
+                "name": "plan has locations array",
+                "path": "::plan has locations array",
+                "id": "60a681aa9f87f72dbd82284f192cd2fe",
+                "passes": 296389,
+                "fails": 0
+            },
+            "status is one of [200,409]": {
+                "name": "status is one of [200,409]",
+                "path": "::status is one of [200,409]",
+                "id": "852c0f8467a8c1debe4684e8a9f00bad",
+                "passes": 29607,
+                "fails": 0
+            },
+            "plan updated successfully": {
+                "name": "plan updated successfully",
+                "path": "::plan updated successfully",
+                "id": "2a8011a0230cc8fa757089fd90ed81fc",
+                "passes": 29531,
+                "fails": 76
+            },
+            "version incremented": {
+                "name": "version incremented",
+                "path": "::version incremented",
+                "id": "fb675b3b7988b8d6d0abbac9ae2f933f",
+                "passes": 29531,
+                "fails": 76
+            }
+        }
+    }
+}
