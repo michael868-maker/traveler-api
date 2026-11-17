@@ -1,0 +1,86 @@
+name: k6 smoke test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  k6-smoke:
+    runs-on: ubuntu-latest
+
+    # PostgreSQL for the test run (only inside GitHub's CI machine)
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: traveler
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Create database schema
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d traveler -v ON_ERROR_STOP=1 -f docs/schema.sql
+
+      - name: Build application
+        run: |
+          chmod +x mvnw
+          ./mvnw -B -DskipTests package
+
+      - name: Start application
+        run: |
+          nohup java -Duser.timezone=UTC -jar target/traveler-api-*.jar \
+            --spring.datasource.url=jdbc:postgresql://localhost:5432/traveler \
+            --spring.datasource.username=postgres \
+            --spring.datasource.password=postgres \
+            > app.log 2>&1 &
+
+      - name: Wait for the API to become healthy
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8080/health > /dev/null; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API did not start in time"
+          cat app.log
+          exit 1
+
+      - name: Set up k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 smoke test
+        working-directory: tests/performance-tests/tests
+        run: k6 run -e API_URL=http://localhost:8080 --summary-export=smoke-summary.json smoke-test.js
+
+      - name: Upload k6 results and application log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-smoke-results
+          path: |
+            tests/performance-tests/tests/smoke-summary.json
+            app.log
