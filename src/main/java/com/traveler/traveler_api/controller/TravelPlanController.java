@@ -1,5 +1,6 @@
 package com.traveler.traveler_api.controller;
 
+import com.traveler.traveler_api.cache.TravelPlanCache;
 import com.traveler.traveler_api.dto.TravelPlanCreateRequest;
 import com.traveler.traveler_api.dto.TravelPlanResponse;
 import com.traveler.traveler_api.dto.TravelPlanUpdateRequest;
@@ -16,9 +17,11 @@ import java.util.UUID;
 @RequestMapping("/api/travel-plans")
 public class TravelPlanController {
     private final TravelPlanService planService;
+    private final TravelPlanCache planCache;
 
-    public TravelPlanController(TravelPlanService planService){
+    public TravelPlanController(TravelPlanService planService, TravelPlanCache planCache){
         this.planService = planService;
+        this.planCache = planCache;
     }
 
     @GetMapping
@@ -33,7 +36,15 @@ public class TravelPlanController {
 
     @GetMapping("/{id}")
     public TravelPlanResponse getById(@PathVariable("id") UUID id){
-        return planService.findById(id);
+        TravelPlanResponse cached = planCache.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        // Remember the invalidation counter before reading from the DB
+        long stamp = planCache.currentStamp();
+        TravelPlanResponse fresh = planService.findById(id);
+        planCache.putIfUnchanged(id, fresh, stamp);
+        return fresh;
     }
 
     @PutMapping("/{id}")

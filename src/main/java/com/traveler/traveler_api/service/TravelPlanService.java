@@ -1,5 +1,6 @@
 package com.traveler.traveler_api.service;
 
+import com.traveler.traveler_api.cache.TravelPlanCache;
 import com.traveler.traveler_api.dto.TravelPlanCreateRequest;
 import com.traveler.traveler_api.dto.TravelPlanResponse;
 import com.traveler.traveler_api.dto.TravelPlanUpdateRequest;
@@ -21,9 +22,11 @@ import java.util.UUID;
 @Service
 public class TravelPlanService {
     private final TravelPlanRepository planRepository;
+    private final TravelPlanCache planCache;
 
-    public TravelPlanService(TravelPlanRepository planRepository){
+    public TravelPlanService(TravelPlanRepository planRepository, TravelPlanCache planCache){
         this.planRepository = planRepository;
+        this.planCache = planCache;
     }
 
     @Transactional(readOnly = true)
@@ -86,6 +89,8 @@ public class TravelPlanService {
             throw new ConflictException("Conflict: travel plan was modified by another user", currentVersion);
         }
 
+        planCache.evictAfterCommit(id);
+
         return TravelPlanResponse.from(getPlanOrThrow(id));
     }
 
@@ -94,6 +99,9 @@ public class TravelPlanService {
         if (!planRepository.existsById(id)) {
             throw new NotFoundException("Travel plan not found");
         }
+
+        planCache.evictAfterCommit(id);
+
         planRepository.deleteById(id);
     }
 

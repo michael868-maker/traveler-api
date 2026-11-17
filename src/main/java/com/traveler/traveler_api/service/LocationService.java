@@ -1,5 +1,6 @@
 package com.traveler.traveler_api.service;
 
+import com.traveler.traveler_api.cache.TravelPlanCache;
 import com.traveler.traveler_api.dto.LocationCreateRequest;
 import com.traveler.traveler_api.dto.LocationResponse;
 import com.traveler.traveler_api.dto.LocationUpdateRequest;
@@ -22,10 +23,13 @@ import java.util.UUID;
 public class LocationService {
     private final LocationRepository locationRepository;
     private final TravelPlanRepository planRepository;
+    private final TravelPlanCache planCache;
 
-    public LocationService(LocationRepository locationRepository, TravelPlanRepository planRepository){
+    public LocationService(LocationRepository locationRepository, TravelPlanRepository planRepository,
+                           TravelPlanCache planCache){
         this.locationRepository = locationRepository;
         this.planRepository = planRepository;
+        this.planCache = planCache;
     }
 
     @Transactional
@@ -53,12 +57,16 @@ public class LocationService {
         location.setNotes(req.notes());
 
         Location saved = locationRepository.save(location);
+
+        planCache.evictAfterCommit(planId);
+
         return LocationResponse.from(saved);
     }
 
     @Transactional
     public LocationResponse update(UUID id, LocationUpdateRequest req){
         Location current = getLocationOrThrow(id);
+        UUID planId = current.getTravelPlan().getId();
 
         String name = current.getName();
         if (req.name() != null) {
@@ -87,15 +95,17 @@ public class LocationService {
             throw new ConflictException("Conflict: location was modified by another user", currentVersion);
         }
 
+        planCache.evictAfterCommit(planId);
+
         return LocationResponse.from(getLocationOrThrow(id));
     }
 
     @Transactional
     public void delete(UUID id){
-        if (!locationRepository.existsById(id)) {
-            throw new NotFoundException("Location not found");
-        }
-        locationRepository.deleteById(id);
+        Location location = getLocationOrThrow(id);
+        UUID planId = location.getTravelPlan().getId();
+        locationRepository.delete(location);
+        planCache.evictAfterCommit(planId);
     }
 
     private Location getLocationOrThrow(UUID id){
