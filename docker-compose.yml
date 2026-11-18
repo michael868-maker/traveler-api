@@ -65,9 +65,49 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       REPL_USER: ${REPL_USER}
       REPL_PASSWORD: ${REPL_PASSWORD}
+      REPLICA_NAME: replica1
     entrypoint: ["bash", "/docker-entrypoint-standby/init_standby.sh"]
     volumes:
       - pgdata_replica:/var/lib/postgresql/data
+      - ./db/replications/standby:/docker-entrypoint-standby:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - traveler_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Second physical replica (hot standby): same setup as db_replica,
+  # its own data volume, replication slot and application_name.
+  db_replica2:
+    image: postgres:16-alpine
+    container_name: traveler_db_replica2
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      REPL_USER: ${REPL_USER}
+      REPL_PASSWORD: ${REPL_PASSWORD}
+      REPLICA_NAME: replica2
+    entrypoint: ["bash", "/docker-entrypoint-standby/init_standby.sh"]
+    volumes:
+      - pgdata_replica2:/var/lib/postgresql/data
       - ./db/replications/standby:/docker-entrypoint-standby:ro
     depends_on:
       db:
@@ -135,9 +175,10 @@ services:
         max-file: "3"
 
 volumes:
-  # Named volumes: master and replica keep their data separately
+  # Named volumes: master and replicas keep their data separately
   pgdata:
   pgdata_replica:
+  pgdata_replica2:
 
 networks:
   traveler_network:
