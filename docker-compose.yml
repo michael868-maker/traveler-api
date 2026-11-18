@@ -12,6 +12,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      REPL_USER: ${REPL_USER}
+      REPL_PASSWORD: ${REPL_PASSWORD}
     command:
       - "postgres"
       - "-c"
@@ -22,8 +24,6 @@ services:
       - "max_wal_senders=10"
       - "-c"
       - "max_replication_slots=10"
-      - "-c"
-      - "synchronous_standby_names=FIRST 1 (replica1)"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/migrations:/docker-entrypoint-migrations:ro
@@ -59,6 +59,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      REPL_USER: ${REPL_USER}
+      REPL_PASSWORD: ${REPL_PASSWORD}
     entrypoint: ["bash", "/docker-entrypoint-standby/init_standby.sh"]
     volumes:
       - pgdata_replica:/var/lib/postgresql/data

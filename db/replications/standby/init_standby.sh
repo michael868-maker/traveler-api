@@ -3,10 +3,13 @@ set -euo pipefail
 
 # Physical standby: on the first start clone the master with pg_basebackup,
 # then run PostgreSQL in hot standby mode (read-only, replays master's WAL).
+# Replication credentials come from environment variables (.env).
+: "${REPL_USER:?REPL_USER is not set}"
+: "${REPL_PASSWORD:?REPL_PASSWORD is not set}"
 
 if [ ! -s "$PGDATA/PG_VERSION" ]; then
   echo "Empty data directory: waiting for master..."
-  until pg_isready -h db -p 5432 -U repuser; do
+  until pg_isready -h db -p 5432 -U "$REPL_USER"; do
     sleep 2
   done
 
@@ -17,11 +20,11 @@ if [ ! -s "$PGDATA/PG_VERSION" ]; then
 
   # -X stream: copy WAL during the backup; -C -S: create a physical replication
   # slot on the master so it keeps WAL until the replica has received it
-  su-exec postgres env PGPASSWORD=rep_pass \
-    pg_basebackup -h db -p 5432 -U repuser -D "$PGDATA" -X stream -C -S replica1_slot
+  su-exec postgres env PGPASSWORD="$REPL_PASSWORD" \
+    pg_basebackup -h db -p 5432 -U "$REPL_USER" -D "$PGDATA" -X stream -C -S replica1_slot
 
   # Connection to the master; application_name identifies this replica
-  echo "primary_conninfo = 'host=db port=5432 user=repuser password=rep_pass application_name=replica1'" \
+  echo "primary_conninfo = 'host=db port=5432 user=${REPL_USER} password=${REPL_PASSWORD} application_name=replica1'" \
     >> "$PGDATA/postgresql.auto.conf"
   echo "primary_slot_name = 'replica1_slot'" >> "$PGDATA/postgresql.auto.conf"
 
