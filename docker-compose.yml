@@ -1,8 +1,9 @@
 name: traveler
 
 services:
-  # PostgreSQL database: stores travel plans and locations.
-  # schema.sql is applied automatically on the first start (empty volume).
+  # PostgreSQL master (publisher): the application reads and writes here.
+  # wal_level=logical enables logical replication; on the first start
+  # 500_orchestrate.sh applies migrations, creates repuser and the publication.
   db:
     image: postgres:16-alpine
     container_name: traveler_db
@@ -11,9 +12,25 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+    command:
+      - "postgres"
+      - "-c"
+      - "listen_addresses=*"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "max_logical_replication_workers=4"
+      - "-c"
+      - "max_worker_processes=10"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./docs/schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+      - ./db/migrations:/docker-entrypoint-migrations:ro
+      - ./db/replications/publisher:/docker-entrypoint-replications:ro
+      - ./db/replications/common:/docker-entrypoint-initdb.d:ro
     networks:
       - traveler_network
     healthcheck:
@@ -33,8 +50,60 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # Spring Boot REST API (TravelerAPI).
-  # Starts only after the database reports healthy.
+  # PostgreSQL replica (subscriber): on the first start creates the same tables,
+  # waits for the master and subscribes to its publication (copies data, then
+  # receives every change). Starts only after the master is healthy.
+  db_replica:
+    image: postgres:16-alpine
+    container_name: traveler_db_replica
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    command:
+      - "postgres"
+      - "-c"
+      - "listen_addresses=*"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "max_logical_replication_workers=4"
+      - "-c"
+      - "max_worker_processes=10"
+    volumes:
+      - pgdata_replica:/var/lib/postgresql/data
+      - ./db/migrations:/docker-entrypoint-migrations:ro
+      - ./db/replications/subscriber:/docker-entrypoint-replications:ro
+      - ./db/replications/common:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - traveler_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Spring Boot REST API (TravelerAPI): works with the master only.
+  # Starts only after the master database reports healthy.
   web:
     build:
       context: .
@@ -77,8 +146,9 @@ services:
         max-file: "3"
 
 volumes:
-  # Named volume: database files survive container restarts
+  # Named volumes: master and replica keep their data separately
   pgdata:
+  pgdata_replica:
 
 networks:
   traveler_network:

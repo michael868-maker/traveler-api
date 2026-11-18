@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Waiting for publisher to be ready..."
+until pg_isready -h db -p 5432 -U repuser -d traveler; do
+  echo "Publisher not ready, waiting..."
+  sleep 2
+done
+echo "Publisher is ready!"
+
