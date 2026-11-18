@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Дозволити subscriber підключатися по паролю до всіх баз під користувачем repuser
-echo "host all repuser 0.0.0.0/0 md5" >> "${PGDATA}/pg_hba.conf"
+# Physical replication: allow repuser to connect to the special "replication" database
+echo "host replication repuser 0.0.0.0/0 md5" >> "${PGDATA}/pg_hba.conf"

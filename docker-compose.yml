@@ -1,9 +1,9 @@
 name: traveler
 
 services:
-  # PostgreSQL master (publisher): the application reads and writes here.
-  # wal_level=logical enables logical replication; on the first start
-  # 500_orchestrate.sh applies migrations, creates repuser and the publication.
+  # PostgreSQL master: the application reads and writes here.
+  # wal_level=replica is enough for physical (streaming) replication;
+  # on the first start 500_orchestrate.sh applies migrations and creates repuser.
   db:
     image: postgres:16-alpine
     container_name: traveler_db
@@ -17,15 +17,11 @@ services:
       - "-c"
       - "listen_addresses=*"
       - "-c"
-      - "wal_level=logical"
-      - "-c"
-      - "max_replication_slots=10"
+      - "wal_level=replica"
       - "-c"
       - "max_wal_senders=10"
       - "-c"
-      - "max_logical_replication_workers=4"
-      - "-c"
-      - "max_worker_processes=10"
+      - "max_replication_slots=10"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/migrations:/docker-entrypoint-migrations:ro
@@ -50,9 +46,9 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # PostgreSQL replica (subscriber): on the first start creates the same tables,
-  # waits for the master and subscribes to its publication (copies data, then
-  # receives every change). Starts only after the master is healthy.
+  # PostgreSQL physical replica (hot standby): on the first start clones the
+  # master with pg_basebackup, then continuously replays its WAL.
+  # Read-only; schema changes (DDL) are replicated automatically.
   db_replica:
     image: postgres:16-alpine
     container_name: traveler_db_replica
@@ -61,25 +57,10 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    command:
-      - "postgres"
-      - "-c"
-      - "listen_addresses=*"
-      - "-c"
-      - "wal_level=logical"
-      - "-c"
-      - "max_replication_slots=10"
-      - "-c"
-      - "max_wal_senders=10"
-      - "-c"
-      - "max_logical_replication_workers=4"
-      - "-c"
-      - "max_worker_processes=10"
+    entrypoint: ["bash", "/docker-entrypoint-standby/init_standby.sh"]
     volumes:
       - pgdata_replica:/var/lib/postgresql/data
-      - ./db/migrations:/docker-entrypoint-migrations:ro
-      - ./db/replications/subscriber:/docker-entrypoint-replications:ro
-      - ./db/replications/common:/docker-entrypoint-initdb.d:ro
+      - ./db/replications/standby:/docker-entrypoint-standby:ro
     depends_on:
       db:
         condition: service_healthy
@@ -90,7 +71,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 30s
     deploy:
       resources:
         limits:
