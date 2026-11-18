@@ -24,6 +24,10 @@ services:
       - "max_wal_senders=10"
       - "-c"
       - "max_replication_slots=10"
+      - "-c"
+      - "password_encryption=scram-sha-256"
+      - "-c"
+      - "log_connections=on"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/migrations:/docker-entrypoint-migrations:ro
@@ -102,7 +106,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       APP_CACHE_PLANS_ENABLED: ${CACHE_ENABLED:-false}
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
     depends_on:
       db:
         condition: service_healthy
