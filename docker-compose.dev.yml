@@ -1,0 +1,6 @@
+# Development overrides: open the DB port for debugging tools (pgAdmin, psql).
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+services:
+  db:
+    ports:
+      - "5433:5432"

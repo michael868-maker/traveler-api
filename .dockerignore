@@ -1,0 +1,11 @@
+# Not needed inside the image
+.git/
+.github/
+.idea/
+*.iml
+target/
+tests/
+docs/
+.env
+.env.example
+HELP.md

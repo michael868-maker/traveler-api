@@ -1,0 +1,85 @@
+name: traveler
+
+services:
+  # PostgreSQL database: stores travel plans and locations.
+  # schema.sql is applied automatically on the first start (empty volume).
+  db:
+    image: postgres:16-alpine
+    container_name: traveler_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docs/schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+    networks:
+      - traveler_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Spring Boot REST API (TravelerAPI).
+  # Starts only after the database reports healthy.
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: traveler-api:latest
+    container_name: traveler_api
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://${DB_HOST:-db}:5432/${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      APP_CACHE_PLANS_ENABLED: ${CACHE_ENABLED:-false}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - traveler_network
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  # Named volume: database files survive container restarts
+  pgdata:
+
+networks:
+  traveler_network:
+    driver: bridge
